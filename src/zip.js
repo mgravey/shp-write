@@ -7,7 +7,14 @@ const { forEach } = require('./util');
 module.exports = function(gj, options) {
 
     var zip = new JSZip(),
-        layers = zip.folder(options && options.folder ? options.folder : 'layers');
+        layers;
+
+    // if options.folder is set, zip to a folder with that name
+    if (options && options.folder && typeof options.folder === 'string') {
+        layers = zip.folder(options.folder);
+    } else {
+        layers = zip;
+    }
 
     forEach([geojson.point(gj), geojson.line(gj), geojson.polygon(gj)], function(l) {
         if (l.geometries.length && l.geometries[0].length) {

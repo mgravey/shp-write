@@ -7,7 +7,14 @@ const { forEach } = require('./util');
 module.exports = function(gj, options) {
 
     var zip = new JSZip(),
-        layers = zip.folder(options && options.folder ? options.folder : 'layers');
+        layers;
+
+    // if options.folder is set, zip to a folder with that name
+    if (options && options.folder && typeof options.folder === 'string') {
+        layers = zip.folder(options.folder);
+    } else {
+        layers = zip;
+    }
 
     forEach([geojson.point(gj), geojson.line(gj), geojson.polygon(gj)], function(l) {
         if (l.geometries.length && l.geometries[0].length) {
@@ -19,7 +26,7 @@ module.exports = function(gj, options) {
                 // geometries
                 l.geometries,
                 function(err, files) {
-                    var fileName = options && options.types[l.type.toLowerCase()] ? options.types[l.type.toLowerCase()] : l.type;
+                    var fileName = options && options.types && options.types[l.type.toLowerCase()] ? options.types[l.type.toLowerCase()] : l.type;
                     layers.file(fileName + '.shp', files.shp.buffer, { binary: true });
                     layers.file(fileName + '.shx', files.shx.buffer, { binary: true });
                     layers.file(fileName + '.dbf', files.dbf.buffer, { binary: true });
@@ -28,11 +35,13 @@ module.exports = function(gj, options) {
         }
     });
 
-    var generateOptions = { compression:'STORE' };
+    const generateOptions = {
+        type: "blob"
+    };
 
     if (!process.browser) {
       generateOptions.type = 'nodebuffer';
     }
 
-    return zip.generate(generateOptions);
+    return zip.generateAsync(generateOptions);
 };

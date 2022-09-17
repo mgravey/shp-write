@@ -106,3 +106,4 @@ object.
 
 * Nick Baugh <niftylettuce@gmail.com>
 * Jason Graves <jgraves@novilabs.com>
+* Mathieu Gravey <research@mgravey.com>

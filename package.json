@@ -1,6 +1,6 @@
 {
   "name": "shp-write",
-  "version": "0.3.2",
+  "version": "0.5.0",
   "description": "write shapefiles from pure javascript",
   "main": "index.js",
   "scripts": {
@@ -27,15 +27,24 @@
     {
       "name": "Nick Baugh",
       "email": "niftylettuce@gmail.com"
+    },
+    {
+      "name": "Jason Graves",
+      "email": "jgraves@novilabs.com"
+    },
+    {
+      "name": "Mathieu Gravey",
+      "email": "research@mgravey.com"
     }
   ],
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/mapbox/shp-write/issues"
+    "url": "https://github.com/mgravey/shp-write/issues"
   },
   "dependencies": {
     "dbf": "0.1.4",
-    "jszip": "3.6.0"
+    "jszip": "3.6.0",
+    "file-saver": "^2.0.2"
   },
   "devDependencies": {
     "browserify": "^13.0.0",

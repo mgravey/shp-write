@@ -6,18 +6,15 @@ const { forEach } = require('./util');
 
 module.exports = function(gj, options, stream = false) {
 
-    var zip = new JSZip(),
-        layers;
-
-    // if options.folder is set, zip to a folder with that name
-    if (options && options.folder && typeof options.folder === 'string') {
-        layers = zip.folder(options.folder);
-    } else {
-        layers = zip;
-    }
+    let zipedFile=[];
 
     forEach([geojson.point(gj), geojson.line(gj), geojson.polygon(gj), geojson.multipolygon(gj), geojson.multiline(gj)], function(l) {
         if (l.geometries.length && l.geometries[0].length) {
+            var zip = new JSZip(),
+                layers;
+
+            layers = zip
+
             write(
                 // field definitions
                 l.properties,
@@ -32,18 +29,17 @@ module.exports = function(gj, options, stream = false) {
                     layers.file(fileName + '.dbf', files.dbf.buffer, { binary: true });
                     layers.file(fileName + '.prj', prj);
                 });
+            
+            const generateOptions = {
+                type: "blob"
+            };
+
+            if (!process.browser) {
+              generateOptions.type = 'nodebuffer';
+            }
+
+            zipedFile.push(zip.generateAsync(generateOptions));
         }
     });
-
-    const generateOptions = {
-        type: "blob"
-    };
-
-    if (!process.browser) {
-      generateOptions.type = 'nodebuffer';
-    }
-
-    if (stream) return zip.generateNodeStream({...generateOptions,streamFiles:true});
-    else return zip.generateAsync(generateOptions);
-    return zip.generateAsync(generateOptions);
+    return zipedFile;
 };
